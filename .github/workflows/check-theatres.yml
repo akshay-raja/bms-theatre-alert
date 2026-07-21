@@ -1,0 +1,41 @@
+name: Check BookMyShow Theatres
+
+on:
+  schedule:
+    # Runs every 5 minutes (the fastest GitHub Actions allows for scheduled
+    # runs). During busy periods GitHub may delay a run by a few extra
+    # minutes — that's a platform limitation, not something this script
+    # controls.
+    - cron: "*/5 * * * *"
+  workflow_dispatch: {}   # lets you tap "Run workflow" manually to test
+
+permissions:
+  contents: write   # needed so the workflow can save its "already seen" memory
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          playwright install --with-deps chromium
+
+      - name: Run theatre check
+        env:
+          BMS_NTFY_TOPIC: ${{ secrets.BMS_NTFY_TOPIC }}
+        run: python monitor.py
+
+      - name: Save updated memory of seen theatres
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Update seen theatres"
+          file_pattern: seen_theatres.json
