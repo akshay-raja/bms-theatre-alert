@@ -39,7 +39,7 @@ from playwright.sync_api import sync_playwright
 
 URL = "https://in.bookmyshow.com/movies/chennai/jana-nayagan/buytickets/ET00430817/20260725"
 
-KEYWORDS = ["PVR", "INOX", "AGS", "Rohini"]
+KEYWORDS = ["PVR", "INOX", "AGS"]
 
 STATE_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "seen_theatres.json")
 
@@ -65,13 +65,15 @@ def fetch_theatre_names(url: str) -> list[str]:
         # element followed by "<distance> km". We grab all visible text and
         # split into lines, which is robust to their CSS class names changing.
         page.wait_for_timeout(3000)  # let any lazy-loaded rows settle
-body_text = page.inner_text("body")
-page_title = page.title()
-browser.close()
+        body_text = page.inner_text("body")
+        page_title = page.title()
+        browser.close()
 
-print(f"DEBUG page title: {page_title!r}")
-print(f"DEBUG body_text length: {len(body_text)} characters")
-print(f"DEBUG first 500 chars: {body_text[:500]!r}")
+    # --- DEBUG: temporary, helps diagnose blocked/empty pages ---
+    print(f"DEBUG page title: {page_title!r}")
+    print(f"DEBUG body_text length: {len(body_text)} characters")
+    print(f"DEBUG first 500 chars: {body_text[:500]!r}")
+    # --- end debug ---
 
     lines = [ln.strip() for ln in body_text.split("\n") if ln.strip()]
 
