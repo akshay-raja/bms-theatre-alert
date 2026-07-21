@@ -39,7 +39,7 @@ from playwright.sync_api import sync_playwright
 
 URL = "https://in.bookmyshow.com/movies/chennai/jana-nayagan/buytickets/ET00430817/20260725"
 
-KEYWORDS = ["PVR", "INOX", "AGS"]
+KEYWORDS = ["PVR", "INOX", "AGS", "Rohini"]
 
 STATE_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "seen_theatres.json")
 
